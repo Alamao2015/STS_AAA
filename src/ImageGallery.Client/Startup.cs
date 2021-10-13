@@ -12,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using IdentityModel;
 using ImageGallery.Client.HttpHandlers;
+using Microsoft.Extensions.Options;
+using ImageGallery.Client.PostConfigurationOptions;
 
 namespace ImageGallery.Client
 {
@@ -64,6 +66,13 @@ namespace ImageGallery.Client
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             }).AddHttpMessageHandler<BearerTokenHandler>();
 
+            services.AddHttpClient("BasicAPIClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44366/");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+            });
+            
             // create an HttpClient used for accessing the IDP
             services.AddHttpClient("IDPClient", client =>
             {
@@ -89,15 +98,13 @@ namespace ImageGallery.Client
                 options.ClientId = "imagegalleryclient";
                 options.ResponseType = "code";               
                 options.Scope.Add("address"); 
-                options.Scope.Add("imagegalleryapi");
-                options.Scope.Add("subscriptionlevel");
+                options.Scope.Add("imagegalleryapi"); 
                 options.Scope.Add("country");
                 options.Scope.Add("offline_access");
                 options.ClaimActions.DeleteClaim("sid");
                 options.ClaimActions.DeleteClaim("idp");
                 options.ClaimActions.DeleteClaim("s_hash");
-                options.ClaimActions.DeleteClaim("auth_time"); 
-                options.ClaimActions.MapUniqueJsonKey("subscriptionlevel", "subscriptionlevel");
+                options.ClaimActions.DeleteClaim("auth_time");  
                 options.ClaimActions.MapUniqueJsonKey("country", "country");
                 options.SaveTokens = true;
                 options.ClientSecret = "secret";
@@ -106,9 +113,11 @@ namespace ImageGallery.Client
                 {
                     NameClaimType = JwtClaimTypes.GivenName,
                     RoleClaimType = JwtClaimTypes.Role
-                };
+                }; 
             });
 
+            services.AddSingleton<IPostConfigureOptions<OpenIdConnectOptions>, 
+                OpenIdConnectOptionsPostConfigureOptions>();
 
         }
 

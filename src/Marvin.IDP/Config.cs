@@ -15,24 +15,28 @@ namespace Marvin.IDP
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Address(), 
+                new IdentityResources.Address(),
                 new IdentityResource(
                     "country",
                     "The country you're living in",
-                    new List<string>() { "country" }),
-                new IdentityResource(
-                    "subscriptionlevel",
-                    "Your subscription level",
-                    new List<string>() { "subscriptionlevel" })
+                    new List<string>() { "country" })
+                ,new IdentityResource(
+                    "projects-api",
+                    "projects-api",
+                    new List<string>() { "Projects API" })
             };
 
+        //public static IEnumerable<ApiScope> ApiScopes =>
+        // new List<ApiScope>
+        // {
+        //        new ApiScope("projects-api", "Projects API")
+        // };
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
                 new ApiResource(
                     "imagegalleryapi",
-                    "Image Gallery API", 
-                    new [] { "subscriptionlevel" })
+                    "Image Gallery API")
                 {
                     ApiSecrets = { new Secret("apisecret".Sha256()) }
                 }
@@ -42,15 +46,15 @@ namespace Marvin.IDP
             new Client[]
             {
                 new Client
-                {                    
+                {
                     AccessTokenLifetime = 1200,
-                    AllowOfflineAccess = true, 
+                    AllowOfflineAccess = true,
                     UpdateAccessTokenClaimsOnRefresh = true,
                     ClientName = "Image Gallery",
                     ClientId = "imagegalleryclient",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
-					RequireConsent = false,
+                    RequireConsent = false,
                     RedirectUris = new List<string>()
                     {
                         "https://localhost:44389/signin-oidc"
@@ -64,14 +68,38 @@ namespace Marvin.IDP
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
+                         "projects-api",
                         "imagegalleryapi",
-                        "country",
-                        "subscriptionlevel"
+                        "country"
                     },
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     }
-                } };
+                },
+                new Client
+                {
+                    ClientId = "spa-client",
+                    ClientName = "Projects SPA",
+                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    AllowAccessTokensViaBrowser = true,
+                    RequireConsent = false,
+
+
+                    RedirectUris =           { "http://localhost:4200/signin-callback", "http://localhost:4200/assets/silent-callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:4200/signout-callback" },
+                    AllowedCorsOrigins =     { "http://localhost:4200" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "projects-api"
+                    },
+                    AccessTokenLifetime = 600
+                },
+            };
     }
 }

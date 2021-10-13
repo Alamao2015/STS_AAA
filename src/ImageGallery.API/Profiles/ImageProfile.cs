@@ -25,7 +25,7 @@ namespace ImageGallery.API.Profiles
             CreateMap<Model.ImageForUpdate, Entities.Image>()
                 .ForMember(m => m.FileName, options => options.Ignore())
                 .ForMember(m => m.Id, options => options.Ignore())
-                .ForMember(m => m.OwnerId, options => options.Ignore());
+                .ForMember(m => m.OwnerId, options => options.Ignore());    
         }
     }
 }
