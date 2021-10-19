@@ -88,7 +88,8 @@ namespace Marvin.IDP
         public async Task<IActionResult> Callback()
         {
             // read external identity from the temporary cookie
-            var result = await HttpContext.AuthenticateAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            var result = await HttpContext.AuthenticateAsync(
+                IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
             {
                 throw new Exception("External authentication error");
@@ -120,10 +121,12 @@ namespace Marvin.IDP
             ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
 
             // issue authentication cookie for user
-            await HttpContext.SignInAsync(user.SubjectId, user.Username, provider, localSignInProps, additionalLocalClaims.ToArray());
+            await HttpContext.SignInAsync(user.SubjectId, user.Username,
+                provider, localSignInProps, additionalLocalClaims.ToArray());
 
             // delete temporary cookie used during external authentication
-            await HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            await HttpContext.SignOutAsync(
+                IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
             // retrieve return URL
             var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
@@ -148,7 +151,8 @@ namespace Marvin.IDP
         private async Task<IActionResult> ProcessWindowsLoginAsync(string returnUrl)
         {
             // see if windows auth has already been requested and succeeded
-            var result = await HttpContext.AuthenticateAsync(AccountOptions.WindowsAuthenticationSchemeName);
+            var result = await HttpContext.AuthenticateAsync(
+                AccountOptions.WindowsAuthenticationSchemeName);
             if (result?.Principal is WindowsPrincipal wp)
             {
                 // we will issue the external cookie and then redirect the
@@ -192,7 +196,8 @@ namespace Marvin.IDP
             }
         }
 
-        private (TestUser user, string provider, string providerUserId, IEnumerable<Claim> claims) FindUserFromExternalProvider(AuthenticateResult result)
+        private (TestUser user, string provider, string providerUserId, IEnumerable<Claim> claims)
+            FindUserFromExternalProvider(AuthenticateResult result)
         {
             var externalUser = result.Principal;
 

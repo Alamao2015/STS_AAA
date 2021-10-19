@@ -20,17 +20,12 @@ namespace Marvin.IDP
                     "country",
                     "The country you're living in",
                     new List<string>() { "country" })
-                ,new IdentityResource(
+                 ,new IdentityResource(
                     "projects-api",
                     "projects-api",
                     new List<string>() { "Projects API" })
             };
 
-        //public static IEnumerable<ApiScope> ApiScopes =>
-        // new List<ApiScope>
-        // {
-        //        new ApiScope("projects-api", "Projects API")
-        // };
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
@@ -68,16 +63,16 @@ namespace Marvin.IDP
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
-                         "projects-api",
                         "imagegalleryapi",
-                        "country"
+                         "projects-api",
+                        "country" 
                     },
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     }
                 },
-                new Client
+                 new Client
                 {
                     ClientId = "spa-client",
                     ClientName = "Projects SPA",
@@ -100,6 +95,7 @@ namespace Marvin.IDP
                     },
                     AccessTokenLifetime = 600
                 },
+
             };
     }
 }

@@ -259,7 +259,8 @@ namespace Marvin.IDP
 
             var providers = schemes
                 .Where(x => x.DisplayName != null ||
-                            (x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
+                            (x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, 
+                            StringComparison.OrdinalIgnoreCase))
                 )
                 .Select(x => new ExternalProvider
                 {
